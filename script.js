@@ -1,3 +1,17 @@
+$("#nameInput").val(localStorage.getItem("turtleName") || "Le Turtle");
+function _updateName(){
+	$("#turtleName").text(($("#nameInput").val()));
+	localStorage.setItem("turtleName", $("#nameInput").val());
+}
+_updateName();
+$("#nameInput").change(_updateName);
+
+$("#input").val(localStorage.getItem("script"));
+$("#input").change(function(){
+	console.log("Saved!");
+	localStorage.setItem("script", $("#input").val());
+});
+
 var gridSize = 8;
 
 var nodeSize = 50;
@@ -16,6 +30,46 @@ $("#turtle").height(nodeSize);
 $("#map").width(nodeSize * gridSize);
 $("#map").height(nodeSize * gridSize);
 
+$("#dPad1").click(function(){
+	_rot(-1, turtle);
+});
+$("#dPad2").click(function(){
+	_mv(1, turtle);
+});
+$("#dPad3").click(function(){
+	_rot(1, turtle);
+});
+$("#dPad4").click(function(){
+	// _rot(-1, turtle);
+});
+$("#dPad5").click(function(){
+	turtle.pos = {x: 0, y: 0, d: 0};
+	turtle.obj.css("transform", "");
+	_updateTurtle(turtle);
+});
+$("#dPad6").click(function(){
+	// _rot(-1, turtle);
+});
+$("#dPad8").click(function(){
+	_mv(-1, turtle);
+});
+
+$(document).delegate("#input", "keydown", function(e){	//Get tabs into the textarea
+  var code = e.keyCode || e.which;
+  if (code == 9) {
+    e.preventDefault();
+    var start = this.selectionStart;
+    var end = this.selectionEnd;
+
+    $(this).val(
+		$(this).val().substring(0, start) + "\t" + $(this).val().substring(end)
+	);
+
+    this.selectionStart =
+    this.selectionEnd = start + 1;
+  }
+});
+
 var turtle = {
 	obj: $("#turtle"),
 	pos: {
@@ -23,21 +77,17 @@ var turtle = {
 		y: 0,
 		d: 0,
 	},
-	red: function(){
+	rgb: function(){
 		var color = "hsl(" + Math.floor(Math.random()*360) + ", 100%, 50%)";
 		this.obj.css("background-color", color);
 	},
 	r: function(){
-		this.pos.d++;
-		if(this.pos.d > 3) this.pos.d = 0;
-		_rot(1, this.obj);
+		_rot(1, this);
 	},
 	l: function(){
-		this.pos.d--;
-		if(this.pos.d < 0) this.pos.d = 3;
-		_rot(-1, this.obj);
+		_rot(-1, this);
 	},
-	reverse: function(){
+	rev: function(){
 		this.r();
 		this.r();
 	},
@@ -54,20 +104,18 @@ $("#run").click(function(){
 });
 
 function _updateTurtle(obj){
+	// console.log("Updating position for: " + obj);
 	obj.obj.css("left", nodeSize * obj.pos.x);
 	obj.obj.css("top", nodeSize * obj.pos.y);
 }
 
-function _updateName(){
-	$("#turtleName").text(($("#nameInput").val()));
-}
-$("#nameInput").change(_updateName);
-_updateName();
-
 function _rot(direction, obj){
-	var got = /-?[0-9]{1,3}/.exec(obj.get(0).style.transform || "0");
+	obj.pos.d += direction;
+	if(obj.pos.d > 3) obj.pos.d = 0;
+	else if(obj.pos.d < 0) obj.pos.d = 3;
+	var got = /-?[0-9]{1,3}/.exec(obj.obj.get(0).style.transform || "0");
 	var r = (parseInt(got[0]) + (90*direction)) % 360;
-	obj.get(0).style.transform = "_rotate(" + r + "deg)";
+	obj.obj.get(0).style.transform = "rotate(" + r + "deg)";
 }
 
 function _mv(direction, obj){
@@ -87,9 +135,10 @@ function _mv(direction, obj){
 		default:
 			break;
 	}
-	if(!_bound(this.pos, 0, gridSize)){
+	if(!_bound(obj.pos, 0, gridSize-1)){
 		return false;
 	}
+	_updateTurtle(obj);
 	return true;
 }
 

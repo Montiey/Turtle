@@ -5,20 +5,52 @@
 		<link href="https://fonts.googleapis.com/css?family=Roboto+Mono" rel="stylesheet">
 	</head>
 	<body>
-		<div id=container class="generalPanel">
-			<div id="inputContainer" class="generalPanel">
-				<input type="text" id="nameInput" value="Marco">
-				<textarea id="input"></textarea>
-				<button id="run">
-					RUN
-				</button>
+		<div id="container" class="generalPanel">
+			<div id="topContainer" class="generalPanel">
+				<input type="text" id="nameInput">
 			</div>
-
-			<div id="outputContainer" class="generalPanel">
+			<div id="midContainer">
+				<textarea id="input"></textarea>
 				<div id="map">
 					<div id="turtle">
 						<div id="turtleName">
 						</div>
+					</div>
+				</div>
+			</div>
+			<div id="bottomContainer" class="generalPanel">
+				<button id="run">
+					RUN
+				</button>
+				<div id="dPad">
+					<div class="dPadRow">
+							<div class="dPadElemContainer dPadRaised">
+								<img id="dPad1" src="media/dPadArcArrow.png">
+							</div>
+							<div class="dPadElemContainer dPadRaised">
+								<img id="dPad2" src="media/dPadArrow.png">
+							</div>
+							<div class="dPadElemContainer dPadRaised">
+								<img id="dPad3" src="media/dPadArcArrow.png">
+							</div>
+					</div>
+					<div class="dPadRow">
+							<div class="dPadElemContainer">
+								<!-- <img id="dPad4" src="media/dPadArrow.png"> -->
+							</div>
+							<div class="dPadElemContainer dPadRaised">
+								<img id="dPad5" src="media/dPadReset.png">
+							</div>
+							<div class="dPadElemContainer">
+								<!-- <img id="dPad6" src="media/dPadArrow.png"> -->
+							</div>
+					</div>
+					<div class="dPadRow">
+							<div class="dPadElemContainer"></div>
+							<div class="dPadElemContainer dPadRaised">
+								<img id="dPad8" src="media/dPadArrow.png">
+							</div>
+							<div class="dPadElemContainer"></div>
 					</div>
 				</div>
 			</div>
