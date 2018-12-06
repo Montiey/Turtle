@@ -1,3 +1,10 @@
+var _gridSize = 8;
+
+var _nodeSize = 50;
+
+var _actionTime = 500;
+
+
 $("#nameInput").val(localStorage.getItem("turtleName") || "Le Turtle");
 function _updateName(){
 	$("#turtleName").text(($("#nameInput").val()));
@@ -12,23 +19,19 @@ $("#input").change(function(){
 	localStorage.setItem("script", $("#input").val());
 });
 
-var gridSize = 8;
-
-var nodeSize = 50;
-
 var grid = [];
-for(var i = 0; i < gridSize; i++){
+for(var i = 0; i < _gridSize; i++){
 	grid[i] = [];
-	for(var j = 0; j < gridSize; j++){
+	for(var j = 0; j < _gridSize; j++){
 		grid[i][j] = 0;
 	}
 }
 
-$("#turtle").width(nodeSize);
-$("#turtle").height(nodeSize);
+$("#turtle").width(_nodeSize);
+$("#turtle").height(_nodeSize);
 
-$("#map").width(nodeSize * gridSize);
-$("#map").height(nodeSize * gridSize);
+$("#map").width(_nodeSize * _gridSize);
+$("#map").height(_nodeSize * _gridSize);
 
 $("#dPad1").click(function(){
 	_rot(-1, turtle);
@@ -65,10 +68,19 @@ $(document).delegate("#input", "keydown", function(e){	//Get tabs into the texta
 		$(this).val().substring(0, start) + "\t" + $(this).val().substring(end)
 	);
 
-    this.selectionStart =
-    this.selectionEnd = start + 1;
+    this.selectionStart = this.selectionEnd = start + 1;
   }
 });
+
+var _queueNum = 0;
+
+function _queue(f){
+	_queueNum++;
+	setTimeout(function(){
+		f();
+		_queueNum--;
+	}, _queueNum * _actionTime);
+}
 
 var turtle = {
 	obj: $("#turtle"),
@@ -105,8 +117,8 @@ $("#run").click(function(){
 
 function _updateTurtle(obj){
 	// console.log("Updating position for: " + obj);
-	obj.obj.css("left", nodeSize * obj.pos.x);
-	obj.obj.css("top", nodeSize * obj.pos.y);
+	obj.obj.css("left", _nodeSize * obj.pos.x);
+	obj.obj.css("top", _nodeSize * obj.pos.y);
 }
 
 function _rot(direction, obj){
@@ -135,7 +147,7 @@ function _mv(direction, obj){
 		default:
 			break;
 	}
-	if(!_bound(obj.pos, 0, gridSize-1)){
+	if(!_bound(obj.pos, 0, _gridSize-1)){
 		return false;
 	}
 	_updateTurtle(obj);
