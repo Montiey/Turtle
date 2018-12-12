@@ -12,9 +12,6 @@ body{
 	background-color: #444;
 }
 
-.generalPanel{
-}
-
 #container{
 	display: flex;
 	flex-direction: column;
@@ -33,11 +30,6 @@ body{
 
 		margin-bottom: 20px;
 	}
-		#nameInput{
-			width: 200px;
-			height: 30px;
-			padding: 5px;
-		}
 	#midContainer{
 		display: flex;
 		flex-direction: row;
@@ -63,7 +55,8 @@ body{
 
 			border: 5px inset #aaa;
 		}
-			#turtle{
+			.turtle{
+				cursor: pointer;
 				position: absolute;
 
 				width: 50px;
@@ -71,16 +64,8 @@ body{
 				background-color: #00f;
 				background-image: url("media/turtle.png");
 				background-size: 100%;
-				display: flex;
-				flex-direction: column-reverse;
-				align-items: center;
 				transform: rotate(0deg);
 			}
-				#turtleName{
-					text-align: center;
-					font-size: 10px;
-					color: #fff;
-				}
 	#bottomContainer{
 		display: flex;
 		flex-direction: row;
@@ -95,6 +80,8 @@ body{
 			display: flex;
 			justify-content: center;
 			align-items: center;
+
+			cursor: pointer;
 
 			width: 100px;
 			height: 60px;
@@ -124,6 +111,7 @@ body{
 					height: 25px;
 				}
 				.dPadElemContainer.dPadRaised{
+					cursor: pointer;
 					border: 5px outset #aaa;
 					display: inline-flex;
 					justify-content: center;
@@ -141,7 +129,7 @@ body{
 						margin: -5px;
 						padding: 5px;
 					}
-					#dPad3{transform: scaleX(-1)}
-					#dPad4{transform: rotate(-90deg)}
-					#dPad6{transform: rotate(90deg)}
-					#dPad8{transform: scaleY(-1)}
+				#dPad3{transform: scaleX(-1)}
+				#dPad4{transform: rotate(-90deg)}
+				#dPad6{transform: rotate(90deg)}
+				#dPad8{transform: scaleY(-1)}
