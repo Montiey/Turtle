@@ -4,7 +4,6 @@ var _nodeSize = 50;
 
 var _actionTime = 500;
 
-
 $("#nameInput").val(localStorage.getItem("turtleName") || "Le Turtle");
 function _updateName(){
 	$("#turtleName").text(($("#nameInput").val()));
@@ -71,16 +70,6 @@ $(document).delegate("#input", "keydown", function(e){	//Get tabs into the texta
     this.selectionStart = this.selectionEnd = start + 1;
   }
 });
-
-var _queueNum = 0;
-
-function _queue(f){
-	_queueNum++;
-	setTimeout(function(){
-		f();
-		_queueNum--;
-	}, _queueNum * _actionTime);
-}
 
 var turtle = {
 	obj: $("#turtle"),
