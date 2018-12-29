@@ -1,65 +1,31 @@
 <html>
 	<head>
 		<link rel="stylesheet" type="text/css" href="style.css">
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-		<link href="https://fonts.googleapis.com/css?family=Roboto+Mono" rel="stylesheet">
-	</head>
+		<script src="jquery.min.js"></script>
+  </head>
 	<body>
 		<div id="container">
-			<div id="topContainer">
-				<input type="text" id="nameInput">
-			</div>
 			<div id="midContainer">
 				<textarea id="input"></textarea>
 				<div id="map">
-
+					<div id="env"></div>
+					<div id="start"></div>
 				</div>
 			</div>
 			<div id="bottomContainer">
-				<div id="run">
-					RUN
-				</div>
-				<div id="dPad">
-					<div class="dPadRow">
-							<div class="dPadElemContainer dPadRaised">
-								<img id="dPad1" src="media/dPadArcArrow.png">
-							</div>
-							<div class="dPadElemContainer dPadRaised">
-								<img id="dPad2" src="media/dPadArrow.png">
-							</div>
-							<div class="dPadElemContainer dPadRaised">
-								<img id="dPad3" src="media/dPadArcArrow.png">
-							</div>
+				<div id="console"></div>
+				<div id="inventory"></div>
+				<div>
+					<div id="run" class="bigbutton">
+						RUN
 					</div>
-					<div class="dPadRow">
-							<div class="dPadElemContainer">
-								<!-- <img id="dPad4" src="media/dPadArrow.png"> -->
-							</div>
-							<div class="dPadElemContainer dPadRaised">
-								<img id="dPad5" src="media/dPadReset.png">
-							</div>
-							<div class="dPadElemContainer">
-								<!-- <img id="dPad6" src="media/dPadArrow.png"> -->
-							</div>
-					</div>
-					<div class="dPadRow">
-							<div class="dPadElemContainer"></div>
-							<div class="dPadElemContainer dPadRaised">
-								<img id="dPad8" src="media/dPadArrow.png">
-							</div>
-							<div class="dPadElemContainer"></div>
+					<div id="stop" class="bigbutton">
+						RESET
 					</div>
 				</div>
 			</div>
 		</div>
 
-
-
-		<script type="text/javascript" src="turtleUtil.js"></script>
-
-		<script type="text/javascript" src="main.js"></script>
-
-		<script type="text/javascript" src="ui.js"></script>
-
+		<script type="text/javascript" src="script.js"></script>
 	</body>
 </html>

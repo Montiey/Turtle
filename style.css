@@ -1,14 +1,14 @@
 *{
 	margin: 0px;
 	padding: 0px;
-	font-family: "Roboto Mono";
+	font-family: "Arial";
 }
 
 html{
 }
 
 body{
-	padding: 20px;
+	padding: 10px;
 	background-color: #444;
 }
 
@@ -19,7 +19,7 @@ body{
 
 	background-color: #888;
 
-	padding: 20px;
+	padding: 10px;
 
 	border: 5px outset #aaa;
 }
@@ -28,8 +28,16 @@ body{
 		flex-direction: row;
 		justify-content: center;
 
-		margin-bottom: 20px;
+		margin-bottom: 10px;
 	}
+		#mainTitle{
+			border: 5px inset #aaa;
+			font-weight: bold;
+			font-size: 20px;
+			padding: 5px;
+			background-color: #222;
+			color: #fff;
+		}
 	#midContainer{
 		display: flex;
 		flex-direction: row;
@@ -42,21 +50,20 @@ body{
 			padding: 10px;
 			border: 5px inset #aaa;
 
+			font-size: 20px;
+
 			resize: none;
-			margin-right: 20px;
+			margin-right: 10px;
 
 			flex-grow: 1;
-			max-width: 800px;
 		}
 		#map{
 			margin: none;
 			background-color: #222;
 			position: relative;
-
 			border: 5px inset #aaa;
 		}
 			.turtle{
-				cursor: pointer;
 				position: absolute;
 
 				width: 50px;
@@ -64,72 +71,132 @@ body{
 				background-color: #00f;
 				background-image: url("media/turtle.png");
 				background-size: 100%;
+				display: flex;
+				flex-direction: column-reverse;
+				align-items: center;
 				transform: rotate(0deg);
 			}
+			#start{
+				background-color: #7f7;
+				position: absolute;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+			}
+		#env{
+			background-color: rgba(255, 255, 255, 0%);
+			width: 100%;
+			height: 100%;
+		}
+			.materialNode{
+				/*background-color: #fff;*/
+				position: absolute;
+			}
+			.typeAir{
+				background-color: none;
+			}
+			.typeStone{
+				background-color: #777;
+			}
+			.typeDirt{
+				background-color: #f94;
+			}
+			.typeSpriteCranberry{
+				background-color: #f44;
+			}
+			.typeUnknown{
+				background-color: #eee;
+			}
 	#bottomContainer{
-		display: flex;
-		flex-direction: row;
-		justify-content: center;
-		align-items: center;
-
-		margin-top: 20px;
+		margin-top: 10px;
 
 		user-select: none;
+
+		display: flex;
+		justify-content: space-between;
+
+		width: 100%;
 	}
-		#run{
-			display: flex;
-			justify-content: center;
-			align-items: center;
+		#console{
+			background-color: #222;
+			border: 5px inset #aaa;
+			height: 200px;
 
-			cursor: pointer;
-
-			width: 100px;
+			margin-right: 10px;
+			flex-basis: 0;
+			flex-grow: 2;
+			overflow-y: scroll;
+			color: #fff;
+			overflow-wrap: break-word;
+			padding: 10px;
+		}
+		#inventory{
+			background-color: #222;
+			border: 5px inset #aaa;
+			height: 200px;
+			flex-basis: 0;
+			flex-grow: 2;
+			overflow-y: scroll;
+			color: #fff;
+			overflow-wrap: break-word;
+			padding: 10px;
+		}
+		.bigButton{
+			width: 120px;
 			height: 60px;
-			background-color: #7f7;
-			border: 5px outset #7f7;
 
 			font-size: 30px;
 			font-weight: bold;
-
-			margin-right: 20px;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+		#run{
+			background-color: #7f7;
+			border: 5px outset #7f7;
+			margin-left: 10px;
+			margin-bottom: 10px;
 		}
 		#run:active{
 			border: 5px inset #7f7;
 		}
-		#dPad{
-			border: 5px inset #aaa;
+		#stop{
+			background-color: #f77;
+			border: 5px outset #f77;
+			margin-left: 10px;
+			margin-bottom: 10px;
 		}
-			.dPadRow{
-				display: flex;
-				flex-direction: row;
-				align-items: center;
-				justify-content: center;
-				user-select: none;
+		#stop:active{
+			border: 5px inset #f77;
+		}
+
+		#run.disabled{
+			padding-top: 0px;
+			padding-left: 0px;
+			border: 5px inset #777;
+			background-color: #777;
+		}
+		#speedRow{
+			display: flex;
+			flex-direction: row;
+			/*border: 1px solid #fff;*/
+			justify-content: center;
+			width: 100%;
+		}
+			#speed1{
+
 			}
-				.dPadElemContainer{
-					width: 25px;
-					height: 25px;
-				}
-				.dPadElemContainer.dPadRaised{
-					cursor: pointer;
-					border: 5px outset #aaa;
-					display: inline-flex;
-					justify-content: center;
-					align-items: center;
-				}
-				.dPadElemContainer.dPadRaised:active{
-					border: 5px inset #aaa;
-					display: inline-flex;
-					justify-content: center;
-					align-items: center;
-				}
-					.dPadElemContainer img{
-						height: 100%;
-						width: 100%;
-						margin: -5px;
-						padding: 5px;
-					}
-				#dPad3{transform: scaleX(-1)}
-				#dPad4{transform: rotate(-90deg)}
-				#dPad6{transform: rotate(90deg)}
-				#dPad8{transform: scaleY(-1)}
+			#speed2{
+
+			}
+			#speed3{
+
+			}
+			.speedImg{
+				width: 25px;
+				height: 25px;
+				border: 5px outset #aaa;
+			}
+			.speedImg:active{
+				border: 5px inset #aaa;
+			}
