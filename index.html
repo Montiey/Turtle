@@ -4,23 +4,43 @@
 		<script src="jquery.min.js"></script>
   </head>
 	<body>
-		<div id="container">
-			<div id="midContainer">
-				<textarea id="input"></textarea>
+		<div class="rowBox" style="height: 100%">
+			<textarea id="input"></textarea>
+			<div class="colBox">
 				<div id="map">
 					<div id="env"></div>
 					<div id="start"></div>
 				</div>
-			</div>
-			<div id="bottomContainer">
-				<div id="console"></div>
-				<div id="inventory"></div>
-				<div>
-					<div id="run" class="bigbutton">
-						RUN
-					</div>
-					<div id="stop" class="bigbutton">
-						RESET
+				<div class="rowBox bigBox">
+					<div class="colBox bigBox">
+						<div class="rowBox stretchBox">
+							<div id="inventory"></div>
+							<div class="colBox">
+								<div class="rowBox centerBox sliderContainer" id="speedSlider">
+									<div class="sliderName">Speed</div>
+									<input type="range" min="1" max="50" step="1" value="1" class="range bigBox">
+									<div class="sliderReadout">01x</div>
+								</div>
+								<!-- <div class="rowBox centerBox sliderContainer" id="sizeSlider"> TODO
+									<div class="sliderName">Node Size</div>
+									<input type="range" min="10" max="150" step="10" value="30" class="range bigBox">
+									<div class="sliderReadout">030px</div>
+								</div>
+								<div class="rowBox centerBox sliderContainer" id="rowsSlider">
+									<div class="sliderName">Rows</div>
+									<input type="range" min="5" max="100" step="1" value="15" class="range bigBox">
+									<div class="sliderReadout">15</div>
+								</div>
+								<div class="rowBox centerBox sliderContainer" id="colsSlider">
+									<div class="sliderName">Cols</div>
+									<input type="range" min="5" max="100" step="1" value="30" class="range bigBox">
+									<div class="sliderReadout">30</div>
+								</div> -->
+							</div>
+							<div id="run" class="bigbutton">RUN</div>
+							<div id="stop" class="bigbutton">RESET</div>
+						</div>
+						<div id="console"></div>
 					</div>
 				</div>
 			</div>

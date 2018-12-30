@@ -1,202 +1,164 @@
+:root{
+	--halfMargin: 5px; /*Represents HALF of the spacing between brick-like items. Therefore, EVERY element must have it on all sides*/
+
+	--guiColor: #999;
+	--guiBorderColor: #bbb;
+	--textBGColor: #222;
+	--runColor: #4f4;
+	--runBorderColor: #4f4;
+	--disabledColor: #888;
+	--disabledBorderColor: #888;
+	--resetColor: #f44;
+	--resetBorderColor: #f44;
+}
+
 *{
 	margin: 0px;
 	padding: 0px;
-	font-family: "Arial";
+	font-family: "Lucida Console";
+	font-size: 20px;
 }
 
 html{
 }
 
 body{
-	padding: 10px;
-	background-color: #444;
+	background-color: var(--guiColor);
+}
+textarea, select, input, button{
+	outline: none;
 }
 
-#container{
+/**/
+
+.rowBox{
+	display: flex;
+	flex-direction: row;
+}
+.colBox{
 	display: flex;
 	flex-direction: column;
+}
+.bigBox{
+	flex-grow: 999;
+}
+.centerBox{
+	align-items: center;
+}
+.stretch{
+	align-items: stretch;
+}
+
+/**/
+
+.sliderContainer{
+	border: 5px outset var(--guiBorderColor);
+	padding: 5px;
+	margin: var(--halfMargin);
+}
+	.sliderName{
+	}
+	.range{
+		margin-left: 5px;
+		margin-right: 5px;
+	}
+	.sliderReadout{
+	}
+
+.bigButton{
+	width: 120px;
+	height: 60px;
+	font-size: 30px;
+	font-weight: bold;
+	display: flex;
+	justify-content: center;
 	align-items: center;
 
-	background-color: #888;
+	margin: var(--halfMargin);
+}
+#run{
+	background-color: var(--runColor);
+	border: 5px outset var(--runBorderColor);
+}
+#run:active{
+	border: 5px inset var(--runBorderColor);
+}
+#run.disabled{
+	padding-top: 0px;
+	padding-left: 0px;
+	border: 5px inset var(--disabledBorderColor);
+	background-color: var(--disabledColor);
+}
+#stop{
+	background-color: var(--resetColor);
+	border: 5px outset var(--resetBorderColor);
+}
+#stop:active{
+	border: 5px inset var(--resetBorderColor);
+}
 
+#input{
+	background-color: var(--textBGColor);
+	color: #fff;
+	padding: 10px;
+	border: 5px inset var(--guiBorderColor);
+	resize: none;
+	flex-grow: 2;
+
+	margin: var(--halfMargin);
+}
+
+#console{
+	background-color: var(--textBGColor);
+	border: 5px inset var(--guiBorderColor);
+	overflow-y: scroll;
+	color: #fff;
+	overflow-wrap: break-word;
 	padding: 10px;
 
-	border: 5px outset #aaa;
+	flex-basis: 0;
+	flex-grow: 4;
+
+	margin: var(--halfMargin);
 }
-	#topContainer{
-		display: flex;
-		flex-direction: row;
-		justify-content: center;
+#inventory{
+	background-color: var(--textBGColor);
+	border: 5px inset var(--guiBorderColor);
+	overflow-y: hidden;
+	color: #fff;
+	overflow-wrap: break-word;
+	padding: 10px;
 
-		margin-bottom: 10px;
+	flex-grow: 1;
+	margin: var(--halfMargin);
+
+}
+
+#map{
+	margin: var(--halfMargin);
+	background-color: var(--textBGColor);
+	position: relative;
+	border: 5px inset var(--guiBorderColor);
+}
+	.turtle{
+		position: absolute;
+		background-color: #00f;
+		background-image: url("media/turtle.png");
+		background-size: 100%;
+		transform: rotate(0deg);
 	}
-		#mainTitle{
-			border: 5px inset #aaa;
-			font-weight: bold;
-			font-size: 20px;
-			padding: 5px;
-			background-color: #222;
-			color: #fff;
-		}
-	#midContainer{
-		display: flex;
-		flex-direction: row;
-		justify-content: center;
+	#env{
+		background-color: rgba(0, 0, 0, 0%);
 		width: 100%;
+		height: 100%;
 	}
-		#input{
-			background-color: #222;
-			color: #fff;
-			padding: 10px;
-			border: 5px inset #aaa;
-
-			font-size: 20px;
-
-			resize: none;
-			margin-right: 10px;
-
-			flex-grow: 1;
+		.materialNode{
+			position: absolute;
 		}
-		#map{
-			margin: none;
-			background-color: #222;
-			position: relative;
-			border: 5px inset #aaa;
-		}
-			.turtle{
-				position: absolute;
-
-				width: 50px;
-				height: 50px;
-				background-color: #00f;
-				background-image: url("media/turtle.png");
-				background-size: 100%;
-				display: flex;
-				flex-direction: column-reverse;
-				align-items: center;
-				transform: rotate(0deg);
-			}
-			#start{
-				background-color: #7f7;
-				position: absolute;
-				display: flex;
-				justify-content: center;
-				align-items: center;
-			}
-		#env{
-			background-color: rgba(255, 255, 255, 0%);
-			width: 100%;
-			height: 100%;
-		}
-			.materialNode{
-				/*background-color: #fff;*/
-				position: absolute;
-			}
-			.typeAir{
-				background-color: none;
-			}
-			.typeStone{
-				background-color: #777;
-			}
-			.typeDirt{
-				background-color: #f94;
-			}
-			.typeSpriteCranberry{
-				background-color: #f44;
-			}
-			.typeUnknown{
-				background-color: #eee;
-			}
-	#bottomContainer{
-		margin-top: 10px;
-
-		user-select: none;
-
+	#start{
+		background-color: var(--runColor);
+		position: absolute;
 		display: flex;
-		justify-content: space-between;
-
-		width: 100%;
+		justify-content: center;
+		align-items: center;
 	}
-		#console{
-			background-color: #222;
-			border: 5px inset #aaa;
-			height: 200px;
-
-			margin-right: 10px;
-			flex-basis: 0;
-			flex-grow: 2;
-			overflow-y: scroll;
-			color: #fff;
-			overflow-wrap: break-word;
-			padding: 10px;
-		}
-		#inventory{
-			background-color: #222;
-			border: 5px inset #aaa;
-			height: 200px;
-			flex-basis: 0;
-			flex-grow: 2;
-			overflow-y: scroll;
-			color: #fff;
-			overflow-wrap: break-word;
-			padding: 10px;
-		}
-		.bigButton{
-			width: 120px;
-			height: 60px;
-
-			font-size: 30px;
-			font-weight: bold;
-			display: flex;
-			justify-content: center;
-			align-items: center;
-		}
-		#run{
-			background-color: #7f7;
-			border: 5px outset #7f7;
-			margin-left: 10px;
-			margin-bottom: 10px;
-		}
-		#run:active{
-			border: 5px inset #7f7;
-		}
-		#stop{
-			background-color: #f77;
-			border: 5px outset #f77;
-			margin-left: 10px;
-			margin-bottom: 10px;
-		}
-		#stop:active{
-			border: 5px inset #f77;
-		}
-
-		#run.disabled{
-			padding-top: 0px;
-			padding-left: 0px;
-			border: 5px inset #777;
-			background-color: #777;
-		}
-		#speedRow{
-			display: flex;
-			flex-direction: row;
-			/*border: 1px solid #fff;*/
-			justify-content: center;
-			width: 100%;
-		}
-			#speed1{
-
-			}
-			#speed2{
-
-			}
-			#speed3{
-
-			}
-			.speedImg{
-				width: 25px;
-				height: 25px;
-				border: 5px outset #aaa;
-			}
-			.speedImg:active{
-				border: 5px inset #aaa;
-			}
