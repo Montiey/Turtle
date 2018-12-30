@@ -1,8 +1,11 @@
-const _gridWidth = 30;
-const _gridHeight = 15;
-const _nodeSize = 30;
-const _opDefault = 125;
-var _opTime = _opDefault;
+const _gridWidthDefault = 30;
+var _gridWidth = _gridWidthDefault;
+const _gridHeightDefault = 15;
+var _gridHeight = _gridHeightDefault;
+const _nodeSizeDefault = 25;
+var _nodeSize = _nodeSizeDefault;
+const _opTimeDefault = 500;
+var _opTime = _opTimeDefault;
 
 var _breakAnimation = false;
 var _animationRunning = false;
@@ -84,10 +87,9 @@ var _ui = {
 }
 
 _env.fill();
-// new Turtle();
-
 _ui.wipeInv();
 _inv(_ui.inventory);
+_initNodes();
 
 function _indicateAnimationActive(b){
 	if(b){
@@ -106,15 +108,44 @@ $("#input").change(function(){
 	localStorage.setItem("script", $("#input").val());
 });
 
-$("#map").width(_nodeSize * _gridWidth);
-$("#map").css("min-width", _nodeSize * _gridWidth);
-$("#map").height(_nodeSize * _gridHeight);
-$("#map").css("background-size", _nodeSize);
+function _initNodes(){
+	$("#map").width(_nodeSize * _gridWidth);
+	$("#map").css("min-width", _nodeSize * _gridWidth);
+	$("#map").height(_nodeSize * _gridHeight);
+	$("#map").css("background-size", _nodeSize);
 
-$("#start").width(_nodeSize);
-$("#start").height(_nodeSize);
-$("#start").css("top", _nodeSize * (_gridHeight-1));
-$("#start").css("left",  _nodeSize * (_gridWidth-1));
+	$("#start").width(_nodeSize);
+	$("#start").height(_nodeSize);
+	$("#start").css("top", _nodeSize * (_gridHeight-1));
+	$("#start").css("left",  _nodeSize * (_gridWidth-1));
+}
+
+$("#speedSlider input").on("input", function(){
+	var divisor = $("#speedSlider input").val();
+	_opTime = _opTimeDefault / divisor;
+
+	var text = "" + divisor;
+
+	while(text.length < 2){
+		text = "0" + text;
+	}
+
+	$("#speedSlider .sliderReadout").text(text + "x");
+});
+
+// $("#sizeSlider input").on("change", function(){
+// 	var newSize = $("#sizeSlider input").val();
+// 	_nodeSize = newSize;
+//
+// 	newSize = "" + newSize;
+//
+// 	while(newSize.length < 3){
+// 		newSize = "0" + newSize;
+// 	}
+//
+// 	$("#sizeSlider .sliderReadout").text(newSize + "px");
+// 	_initNodes();
+// });
 
 $(document).delegate("#input", "keydown", function(e){	//Get tabs into the textarea
   var code = e.keyCode || e.which;
@@ -333,7 +364,7 @@ async function _animate(){
 				}
 				break;
 			case "io":
-				$("#console").html($("#console").html() + frame.console);
+				$("#console").html(frame.console + $("#console").html());
 				_inv(frame.inventory);
 				break;
 		}
