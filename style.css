@@ -55,6 +55,7 @@ textarea, select, input, button{
 	border: 5px outset var(--guiBorderColor);
 	padding: 5px;
 	margin: var(--halfMargin);
+	user-select: none;
 }
 	.sliderName{
 	}
@@ -73,7 +74,7 @@ textarea, select, input, button{
 	display: flex;
 	justify-content: center;
 	align-items: center;
-
+	user-select: none;
 	margin: var(--halfMargin);
 }
 #run{
@@ -139,6 +140,7 @@ textarea, select, input, button{
 	background-color: var(--textBGColor);
 	position: relative;
 	border: 5px inset var(--guiBorderColor);
+	user-select: none;
 }
 	.turtle{
 		position: absolute;
@@ -154,6 +156,8 @@ textarea, select, input, button{
 	}
 		.materialNode{
 			position: absolute;
+			font-size: 8px;
+			color: #fff;
 		}
 	#start{
 		background-color: var(--runColor);

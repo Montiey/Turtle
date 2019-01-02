@@ -166,7 +166,7 @@ $(document).delegate("#input", "keydown", function(e){	//Get tabs into the texta
 ////////////////////////////
 ////////////////////////////
 
-function Turtle(){
+function Turtle(){	//Turtle constructor
 	var createdTurtle = $(document.createElement("div"));
 	createdTurtle.addClass("turtle");
 	createdTurtle.width(_nodeSize);
@@ -181,7 +181,7 @@ function Turtle(){
 		pos: {
 			x: _gridWidth-1,
 			y: _gridHeight-1,
-			d: 0,
+			d: 0,	//unbounded - may be > 3 or < 0
 		},
 		// rgb: function(){
 		// 	this.color = "hsl(" + Math.floor(Math.random()*360) + ", 100%, 50%)";
@@ -210,43 +210,23 @@ function Turtle(){
 			return succ;
 		},
 		dig: function(){
-			var tx = this.pos.x;
-			var ty = this.pos.y;
-
-			var reg = this.pos.d % 4;
-			if(reg < 0) reg += 4;
-
-			switch(reg){
-				case 0:
-					ty --;
-					break;
-				case 1:
-					tx ++;
-					break;
-				case 2:
-					ty ++;
-					break;
-				case 3:
-					tx --;
-					break;
-				default:
-					break;
-			}
+			var t = this.inspect(0);
 
 			try{
-				var got = _env.grid[ty][tx];
-				_ui.inventory[got.name].quantity++;
-				_env.grid[ty][tx] = _env.air;
+				if(t.name == "wall") throw new Error("");
+				_ui.inventory[t.name].quantity++;
+				_env.grid[t.pos.y][t.pos.x] = _env.air;
 
 				_queue(_ui);
 
 			} catch(e){
+				// console.log(e);
 				// console.log("Couldn't dig " + ty + "," + tx + " " + e);	//If out of bounds
 			}
 
 			_queue(_env);
 		},
-		inspect: function(side){	//Given the turtle's position and diretion, do stuff (the basis for some other spatial logistics)
+		inspect: function(side){	//Get the node from a position and direction, given a query side
 			var mat;
 			var ty = this.pos.y;
 			var tx = this.pos.x;
@@ -282,6 +262,9 @@ function Turtle(){
 					x:tx,
 				}
 			}
+		},
+		put: function(){
+
 		}
 	}
 
@@ -359,6 +342,8 @@ async function _animate(){
 
 							elem.css("background-color", frame.grid[y][x].color);
 
+							elem.text(y + "," + x);
+
 							$("#env").append(elem);
 					}
 				}
@@ -383,8 +368,8 @@ async function _animate(){
 // Turtle Logic Evaluation Functionset
 
 function _rot(direction, obj){	//Rotate a turtle
-	obj.pos.d += direction;	//Change the REAL turtle, then...
-	_queue(obj);	//...save the state at this increment
+	obj.pos.d += direction;
+	_queue(obj);
 }
 
 function _mv(direction, obj){	//Move a turtle
