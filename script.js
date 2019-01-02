@@ -23,48 +23,48 @@ var _env = {
 			for(var x = 0; x < _gridWidth; x++){
 				this.grid[y].push([]);
 
-				var index = Math.floor(Math.random() * this.materialTypes.length);
-				var randMat;
-				if(Math.random() > .5){
-					randMat = this.materialTypes[index];
-				} else{
-					randMat = {
-						name: "air",
-						color: "none"
-					};
-				}
+				do{
+					var index = Math.floor(Math.random() * this.materialTypes.length);
+					var randV = Math.random();
+					var mat = this.materialTypes[index];
+				}while(randV >= mat.rarity);
 
-				this.grid[y][x] = randMat;
+				this.grid[y][x] = mat;
 			}
 		}
 
-		this.grid[_gridHeight-1][_gridWidth-1] = this.air;
+		this.grid[_gridHeight-1][_gridWidth-1] = this.materialTypes[0];
 
 		_queue(this);
 		_animate();
 	},
 	materialTypes: [	//Solids only.
 		{
+			name: "air",
+			color: "none",
+			rarity: 1
+		},
+		{
 			name: "rock",
-			color: "#777"
+			color: "#777",
+			rarity: .2
 		},
 		{
 			name: "dirt",
-			color: "f94"
+			color: "f94",
+			rarity: .2
 		},
 		{
 			name: "ore",
-			color: "f44"
+			color: "f44",
+			rarity: .05
 		},
 		{
 			name: "water",
-			color: "#66f"
+			color: "#66f",
+			rarity: .1
 		}
-	],
-	air: {	//for reference
-		name: "air",
-		color: "none"
-	}
+	]
 }
 
 var _ui = {
@@ -77,6 +77,7 @@ var _ui = {
 	},
 	wipeInv: function(){
 		for(var mat of _env.materialTypes){
+			if(mat.name == "air") continue;
 			_ui.inventory[mat.name] = {
 				quantity: 0
 			}
@@ -121,7 +122,8 @@ function _initNodes(){
 }
 
 $("#speedSlider input").on("input", function(){
-	var divisor = $("#speedSlider input").val();
+	var elem = $("#speedSlider input");
+	var divisor = elem.val();
 	_opTime = _opTimeDefault / divisor;
 
 	var text = "" + divisor;
@@ -130,22 +132,15 @@ $("#speedSlider input").on("input", function(){
 		text = "0" + text;
 	}
 
-	$("#speedSlider .sliderReadout").text(text + "x");
-});
+	if(parseInt(text) == elem.attr("max")){
+		text = "&nbsp;&infin;&nbsp;";
+		_opTime = 0;
+	} else{
+		text += "X";
+	}
 
-// $("#sizeSlider input").on("change", function(){
-// 	var newSize = $("#sizeSlider input").val();
-// 	_nodeSize = newSize;
-//
-// 	newSize = "" + newSize;
-//
-// 	while(newSize.length < 3){
-// 		newSize = "0" + newSize;
-// 	}
-//
-// 	$("#sizeSlider .sliderReadout").text(newSize + "px");
-// 	_initNodes();
-// });
+	$("#speedSlider .sliderReadout").html(text);
+});
 
 $(document).delegate("#input", "keydown", function(e){	//Get tabs into the textarea
   var code = e.keyCode || e.which;
@@ -214,8 +209,9 @@ function Turtle(){	//Turtle constructor
 
 			try{
 				if(t.name == "wall") throw new Error("");
+
 				_ui.inventory[t.name].quantity++;
-				_env.grid[t.pos.y][t.pos.x] = _env.air;
+				_env.grid[t.y][t.x] = _env.materialTypes[0];
 
 				_queue(_ui);
 
@@ -232,7 +228,7 @@ function Turtle(){	//Turtle constructor
 			var tx = this.pos.x;
 
 			var points = [
-				{x: 0,y: -1,},
+				{x: 0,y: -1},
 				{x: 1,y: 0},
 				{x: 0,y: 1},
 				{x: -1,y: 0}
@@ -241,12 +237,8 @@ function Turtle(){	//Turtle constructor
 			var actual = (side+this.pos.d) % 4;
 			if(actual < 0) actual += 4;
 
-			// console.log("Turtle d: " + this.pos.d + " and query d: " + side + "..Getting from real side: " + actual);
-
 			tx += points[actual].x;
 			ty += points[actual].y;
-
-			// console.log("Transformation: " + this.pos.y + "," + this.pos.x + "-" + this.pos.d + ": " + ty + "," + tx);
 
 			try{
 				mat = _env.grid[ty][tx].name;
@@ -257,10 +249,8 @@ function Turtle(){	//Turtle constructor
 
 			return {
 				name: mat,
-				pos: {
-					y: ty,
-					x:tx,
-				}
+				y: ty,
+				x: tx
 			}
 		},
 		put: function(){
@@ -273,7 +263,7 @@ function Turtle(){	//Turtle constructor
 
 $("#run").click(async function(){
 	if(_animationRunning){
-		console.log("Already running");
+		// console.log("Already running");
 		return;
 	}
 
@@ -284,12 +274,10 @@ $("#run").click(async function(){
 	_ui.wipeConsole();
 	_ui.wipeInv();
 
-	function doEval(){
-		eval($("#input").val());
-	}
-	doEval();
-	console.log("Evaluation complete. Starting animation...");
-	_indicateAnimationActive(true);	//Wait until parsing has completed (held green: parsing, grey: running)
+	eval($("#input").val());	//TODO: Can this be asyncrhonous?
+
+	// console.log("Evaluation complete. Starting animation...");
+	_indicateAnimationActive(true);	//Wait until parsing has completed to change (held green: parsing, grey: running)
 
 	_animate();
 });
@@ -333,18 +321,18 @@ async function _animate(){
 				$("#env").empty();
 				for(var y = 0; y < _gridHeight; y++){
 					for(var x = 0; x < _gridWidth; x++){
-							var elem = $(document.createElement("div"));
-							elem.addClass("materialNode");
-							elem.css("top", y * _nodeSize);
-							elem.css("left", x * _nodeSize);
-							elem.css("width", _nodeSize);
-							elem.css("height", _nodeSize);
+						var node = frame.grid[y][x];
+						var elem = $(document.createElement("div"));
+						elem.addClass("materialNode");
 
-							elem.css("background-color", frame.grid[y][x].color);
+						elem.css("top", y * _nodeSize);		//Known at runtime
+						elem.css("left", x * _nodeSize);	//
+						elem.css("width", _nodeSize);		//
+						elem.css("height", _nodeSize);		//
 
-							elem.text(y + "," + x);
+						elem.css("background-color", node.color);
 
-							$("#env").append(elem);
+						$("#env").append(elem);
 					}
 				}
 				break;
@@ -360,7 +348,7 @@ async function _animate(){
 		}
 	}
 
-	console.log(">>> Animated " + totalFrames + " frame(s)");
+	// console.log(">>> Animated " + totalFrames + " frame(s)");
 
 	_indicateAnimationActive(false);
 }
@@ -373,53 +361,20 @@ function _rot(direction, obj){	//Rotate a turtle
 }
 
 function _mv(direction, obj){	//Move a turtle
-	var reg = obj.pos.d % 4;
-	if(reg < 0) reg += 4;
+	var succ;
 
-	var succ = true;
+	var side;
+	if(direction == 1) side = 0;
+	if(direction == -1) side = 2;
 
-	var tx = obj.pos.x;
-	var ty = obj.pos.y;
+	var target = obj.inspect(side);
 
-	switch(reg){
-		case 0:
-			ty -= direction;
-			break;
-		case 1:
-			tx += direction;
-			break;
-		case 2:
-			ty += direction;
-			break;
-		case 3:
-			tx -= direction;
-			break;
-		default:
-			break;
-	}
-
-	if(tx > _gridWidth-1){
-		tx = _gridWidth-1;
-		succ = false;
-	} else if(tx < 0){
-		tx = 0;
-		succ = false;
-	} else if(ty > _gridHeight-1){
-		ty = _gridHeight-1;
-		succ = false;
-	} else if(ty < 0){
-		ty = 0;
-		succ = false;
+	if(target.name == "air"){
+		obj.pos.x = target.x;
+		obj.pos.y = target.y;
 	} else{
-		if(_env.grid[ty][tx].name != _env.air.name){
-			succ = false;
-			tx = obj.pos.x;
-			ty = obj.pos.y;
-		}
+		succ = false;
 	}
-
-	obj.pos.x = tx;
-	obj.pos.y = ty;
 
 	_queue(obj);
 
