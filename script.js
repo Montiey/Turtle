@@ -4,7 +4,7 @@ const _gridHeightDefault = 15;
 var _gridHeight = _gridHeightDefault;
 const _nodeSizeDefault = 25;
 var _nodeSize = _nodeSizeDefault;
-const _opTimeDefault = 500;
+const _opTimeDefault = 2000;
 var _opTime = _opTimeDefault;
 
 var _breakAnimation = false;
@@ -13,7 +13,35 @@ var _frameList = [];
 
 //////////
 
-var _env = {
+var materialTypes = {
+	"air": {
+		name: "air",
+		color: "none",
+		rarity: 1
+	},
+	"rock": {
+		name: "rock",
+		color: "#777",
+		rarity: .2
+	},
+	"dirt": {
+		name: "dirt",
+		color: "f94",
+		rarity: .2
+	},
+	"ore": {
+		name: "ore",
+		color: "f44",
+		rarity: .05
+	},
+	"water": {
+		name: "water",
+		color: "#66f",
+		rarity: .1
+	}
+}
+
+var _env = {	//Frame template for the playing environment
 	_frameType: "env",
 	grid: [],
 	fill: function(){
@@ -23,51 +51,26 @@ var _env = {
 			for(var x = 0; x < _gridWidth; x++){
 				this.grid[y].push([]);
 
+				let keys = Object.keys(materialTypes);
+
 				do{
-					var index = Math.floor(Math.random() * this.materialTypes.length);
+					var index = Math.floor(Math.random() * keys.length);
 					var randV = Math.random();
-					var mat = this.materialTypes[index];
+					var mat = materialTypes[keys[index]];
 				}while(randV >= mat.rarity);
 
 				this.grid[y][x] = mat;
 			}
 		}
 
-		this.grid[_gridHeight-1][_gridWidth-1] = this.materialTypes[0];
+		this.grid[_gridHeight-1][_gridWidth-1] = materialTypes.air;
 
 		_queue(this);
 		_animate();
-	},
-	materialTypes: [	//Solids only.
-		{
-			name: "air",
-			color: "none",
-			rarity: 1
-		},
-		{
-			name: "rock",
-			color: "#777",
-			rarity: .2
-		},
-		{
-			name: "dirt",
-			color: "f94",
-			rarity: .2
-		},
-		{
-			name: "ore",
-			color: "f44",
-			rarity: .05
-		},
-		{
-			name: "water",
-			color: "#66f",
-			rarity: .1
-		}
-	]
+	}
 }
 
-var _ui = {
+var _ui = {	//Frame template for the console, inventory
 	_frameType: "io",
 	console: "",	//Text TO BE ADDED on next frame, not the live total
 	wipeConsole: function(){
@@ -76,9 +79,9 @@ var _ui = {
 	inventory: {
 	},
 	wipeInv: function(){
-		for(var mat of _env.materialTypes){
-			if(mat.name == "air") continue;
-			_ui.inventory[mat.name] = {
+		for(var name in materialTypes){
+			if(name == "air") continue;
+			_ui.inventory[name] = {
 				quantity: 0
 			}
 		}
@@ -104,7 +107,6 @@ function _indicateAnimationActive(b){
 
 $("#input").val(localStorage.getItem("script"));
 $("#input").change(function(){
-	console.log("Saved!");
 	_print("Saved");
 	localStorage.setItem("script", $("#input").val());
 });
@@ -161,7 +163,7 @@ $(document).delegate("#input", "keydown", function(e){	//Get tabs into the texta
 ////////////////////////////
 ////////////////////////////
 
-function Turtle(){	//Turtle constructor
+function Turtle(){	//Turtle constructor (and frame template)
 	var createdTurtle = $(document.createElement("div"));
 	createdTurtle.addClass("turtle");
 	createdTurtle.width(_nodeSize);
@@ -173,22 +175,31 @@ function Turtle(){	//Turtle constructor
 	var turtle = {
 		_frameType: "turtle",
 		obj: createdTurtle,
-		pos: {
+		_pos: {
 			x: _gridWidth-1,
 			y: _gridHeight-1,
-			d: 0,	//unbounded - may be > 3 or < 0
+			d: 0,
 		},
-		// rgb: function(){
-		// 	this.color = "hsl(" + Math.floor(Math.random()*360) + ", 100%, 50%)";
-		// 	_queue(this);
-		// },
+		x: function(){
+			return this._pos.x;
+		},
+		y: function(){
+			return this._pos.y;
+		},
+		d: function(){
+			return _normDir(this._pos.d);
+		},
 		r: function(num){
 			for(var i = 0; i < (num || 1); i++){
-				_rot(1, this);
+				this._pos.d++;
+				_queue(this);
 			}
 		},
 		l: function(num){
-			for(var i = 0; i < (num || 1); i++) _rot(-1, this);
+			for(var i = 0; i < (num || 1); i++){
+				this._pos.d--;
+				_queue(this);
+			}
 		},
 		f: function(num){
 			var succ = true;
@@ -204,6 +215,19 @@ function Turtle(){	//Turtle constructor
 			}
 			return succ;
 		},
+		face: function(side){
+			side = _normDir(side);
+			if(side == this.d()) return;
+
+			var diff = side - this.d();
+
+			if(diff > 2){
+				this._pos.d--;
+			} else{
+				this._pos.d += diff;
+			}
+			_queue(this);
+		},
 		dig: function(){
 			var t = this.inspect(0);
 
@@ -211,7 +235,7 @@ function Turtle(){	//Turtle constructor
 				if(t.name == "wall") throw new Error("");
 
 				_ui.inventory[t.name].quantity++;
-				_env.grid[t.y][t.x] = _env.materialTypes[0];
+				_env.grid[t.y][t.x] = materialTypes.air;
 
 				_queue(_ui);
 
@@ -224,8 +248,8 @@ function Turtle(){	//Turtle constructor
 		},
 		inspect: function(side){	//Get the node from a position and direction, given a query side
 			var mat;
-			var ty = this.pos.y;
-			var tx = this.pos.x;
+			var ty = this._pos.y;
+			var tx = this._pos.x;
 
 			var points = [
 				{x: 0,y: -1},
@@ -234,8 +258,7 @@ function Turtle(){	//Turtle constructor
 				{x: -1,y: 0}
 			]
 
-			var actual = (side+this.pos.d) % 4;
-			if(actual < 0) actual += 4;
+			var actual = _normDir(side + this.d());
 
 			tx += points[actual].x;
 			ty += points[actual].y;
@@ -253,8 +276,10 @@ function Turtle(){	//Turtle constructor
 				x: tx
 			}
 		},
-		put: function(){
-
+		put: function(name){
+			var t = this.inspect(0);
+			if(t.name != "air") return false;
+			else _env.grid[t.y][t.x] = materialTypes[t.name];
 		}
 	}
 
@@ -263,23 +288,27 @@ function Turtle(){	//Turtle constructor
 
 $("#run").click(async function(){
 	if(_animationRunning){
-		// console.log("Already running");
+		_print("Already Running");
 		return;
+	} else{
+		_animationRunning = true;
+
+		_frameList = [];
+
+		$(".turtle").remove();
+
+		_ui.wipeConsole();
+		_ui.wipeInv();
+
+		_print("Starting");
+
+		eval($("#input").val());	//TODO: Can this be asyncrhonous?
+
+		// console.log("Evaluation complete. Starting animation...");
+		_indicateAnimationActive(true);	//Wait until parsing has completed to change (held green: parsing, grey: running)
+
+		_animate();
 	}
-
-	_frameList = [];
-
-	$(".turtle").remove();
-
-	_ui.wipeConsole();
-	_ui.wipeInv();
-
-	eval($("#input").val());	//TODO: Can this be asyncrhonous?
-
-	// console.log("Evaluation complete. Starting animation...");
-	_indicateAnimationActive(true);	//Wait until parsing has completed to change (held green: parsing, grey: running)
-
-	_animate();
 });
 
 $("#stop").click(function(){
@@ -296,15 +325,18 @@ $("#stop").click(function(){
 
 async function _animate(){
 	const totalFrames = _frameList.length;
+
+	const lastDir = 0;
 	while(_frameList.length > 0){
 		var frame = _frameList.shift();
 
 		switch(frame._frameType){
 			case "turtle":
+
 				frame.obj.animate({
-					deg: frame.pos.d * 90,
-					top: frame.pos.y * _nodeSize,
-					left: frame.pos.x * _nodeSize,
+					deg: frame._pos.d * 90,
+					top: frame._pos.y * _nodeSize,
+					left: frame._pos.x * _nodeSize,
 				}, {
 					duration: _opTime,
 					easing: "linear",
@@ -337,7 +369,7 @@ async function _animate(){
 				}
 				break;
 			case "io":
-				$("#console").html(frame.console + $("#console").html());
+				$("#console").html($("#console").html() + frame.console);
 				_inv(frame.inventory);
 				break;
 		}
@@ -355,11 +387,6 @@ async function _animate(){
 
 // Turtle Logic Evaluation Functionset
 
-function _rot(direction, obj){	//Rotate a turtle
-	obj.pos.d += direction;
-	_queue(obj);
-}
-
 function _mv(direction, obj){	//Move a turtle
 	var succ;
 
@@ -370,8 +397,8 @@ function _mv(direction, obj){	//Move a turtle
 	var target = obj.inspect(side);
 
 	if(target.name == "air"){
-		obj.pos.x = target.x;
-		obj.pos.y = target.y;
+		obj._pos.x = target.x;
+		obj._pos.y = target.y;
 	} else{
 		succ = false;
 	}
@@ -383,10 +410,14 @@ function _mv(direction, obj){	//Move a turtle
 
 //////// Misc
 
-function _queue(obj){	//TODO: Make sure this is an actual static deep copy
-	var deref = $.extend(true, {}, obj);
+function _queue(obj){
+	var deref = _clone(obj);
 
 	_frameList.push(deref);
+}
+
+function _clone(obj){	//TODO: Make sure this is an actual static deep copy
+	return $.extend(true, {}, obj)
 }
 
 function _delay(ms){	//Use in async (duh)
@@ -395,6 +426,13 @@ function _delay(ms){	//Use in async (duh)
 			res();
 		}, ms);
 	});
+}
+
+function _normDir(d){
+	a = d % 4;
+	if(a < 0) a += 4;
+
+	return a;
 }
 
 function print(text){	//Queues text

@@ -10,13 +10,14 @@
 	--disabledBorderColor: #888;
 	--resetColor: #f44;
 	--resetBorderColor: #f44;
+	--blackPaper: url("media/black.png");
 }
 
 *{
 	margin: 0px;
 	padding: 0px;
-	font-family: "Lucida Console";
-	font-size: 20px;
+	font-family: "Lucida Console", Monaco, monospace;
+	font-size: 12px;
 }
 
 html{
@@ -24,6 +25,8 @@ html{
 
 body{
 	background-color: var(--guiColor);
+	/* background-image: url("media/grey.png"); */
+	margin: 5px;
 }
 textarea, select, input, button{
 	outline: none;
@@ -99,6 +102,7 @@ textarea, select, input, button{
 }
 
 #input{
+	background-image: var(--blackPaper);
 	background-color: var(--textBGColor);
 	color: #fff;
 	padding: 10px;
@@ -110,6 +114,7 @@ textarea, select, input, button{
 }
 
 #console{
+	background-image: var(--blackPaper);
 	background-color: var(--textBGColor);
 	border: 5px inset var(--guiBorderColor);
 	overflow-y: scroll;
@@ -123,6 +128,7 @@ textarea, select, input, button{
 	margin: var(--halfMargin);
 }
 #inventory{
+	background-image: var(--blackPaper);
 	background-color: var(--textBGColor);
 	border: 5px inset var(--guiBorderColor);
 	overflow-y: hidden;
@@ -136,6 +142,7 @@ textarea, select, input, button{
 }
 
 #map{
+	background-image: var(--blackPaper);
 	margin: var(--halfMargin);
 	background-color: var(--textBGColor);
 	position: relative;
